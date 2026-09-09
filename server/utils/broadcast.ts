@@ -10,6 +10,10 @@ export function removePeer(peer: any) {
   peers.delete(peer);
 }
 
+export function numberOfPeers() {
+  return peers.size;
+}
+
 export function broadcastState() {
   const message = JSON.stringify({ type: "state", payload: getFullState() });
   for (const peer of peers) {

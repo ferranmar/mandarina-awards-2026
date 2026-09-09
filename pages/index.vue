@@ -1,5 +1,4 @@
 <script setup>
-const settings = reactive({ title: 'Premios entre amigos', subtitle: 'Votación en vivo entre amigos' })
 const categories = ref([])
 const myVotes = ref({})
 const voterName = ref(null)
@@ -35,8 +34,6 @@ function connectSocket() {
     try {
       const msg = JSON.parse(ev.data)
       if (msg.type === 'state') {
-        settings.title = msg.payload.settings.title
-        settings.subtitle = msg.payload.settings.subtitle
         categories.value = msg.payload.categories
       }
     } catch {}
@@ -46,8 +43,6 @@ function connectSocket() {
 onMounted(async () => {
   try {
     const data = await $fetch('/api/state')
-    settings.title = data.settings.title
-    settings.subtitle = data.settings.subtitle
     categories.value = data.categories
     myVotes.value = data.myVotes || {}
     voterName.value = data.voterName
@@ -178,8 +173,8 @@ async function saveSettings() {
       <span class="dot"></span>
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <h1>{{ settings.title }}</h1>
-    <p>{{ settings.subtitle }}</p>
+    <h1>Mandarina Awards</h1>
+    <p>Quien sera el mayor Mandarina esta temporada?</p>
     <div class="hero-rule"></div>
   </div>
 
@@ -216,13 +211,6 @@ async function saveSettings() {
 
     <!-- ADMIN VIEW -->
     <div v-if="view === 'admin'">
-      <div class="admin-box">
-        <h3>Datos de la ceremonia</h3>
-        <input type="text" v-model="settingsDraft.title" :placeholder="settings.title" style="margin-bottom:8px;">
-        <input type="text" v-model="settingsDraft.subtitle" :placeholder="settings.subtitle">
-        <div class="row"><button class="btn secondary" @click="saveSettings">Guardar</button></div>
-      </div>
-
       <div class="admin-box">
         <h3>Nueva categoría</h3>
         <input type="text" v-model="draftName" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">

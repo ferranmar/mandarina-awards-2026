@@ -9,13 +9,6 @@ export const db = new Database(DB_PATH)
 db.pragma('journal_mode = WAL')
 
 db.exec(`
-CREATE TABLE IF NOT EXISTS settings (
-  id INTEGER PRIMARY KEY CHECK (id = 1),
-  title TEXT NOT NULL DEFAULT 'Premios entre amigos',
-  subtitle TEXT NOT NULL DEFAULT 'Votación en vivo entre amigos'
-);
-INSERT OR IGNORE INTO settings (id, title, subtitle) VALUES (1, 'Premios entre amigos', 'Votación en vivo entre amigos');
-
 CREATE TABLE IF NOT EXISTS categories (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -44,7 +37,6 @@ CREATE TABLE IF NOT EXISTS votes (
 `)
 
 export function getFullState() {
-  const settings = db.prepare('SELECT title, subtitle FROM settings WHERE id = 1').get() as { title: string, subtitle: string }
   const categories = db.prepare('SELECT id, name, status FROM categories ORDER BY position ASC').all() as any[]
   const nomineesStmt = db.prepare('SELECT id, name FROM nominees WHERE category_id = ?')
   const tallyStmt = db.prepare('SELECT nominee_id, COUNT(*) as count FROM votes WHERE category_id = ? GROUP BY nominee_id')
@@ -60,5 +52,5 @@ export function getFullState() {
     return { ...cat, nominees, counts, total }
   })
 
-  return { settings, categories: fullCategories }
+  return {categories: fullCategories }
 }

@@ -173,7 +173,10 @@ async function saveSettings() {
       <span class="dot"></span>
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <h1>Mandarina Awards</h1>
+    <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;"> 
+      <span>Mandarina Awards</span>
+      <IconMandarina style="height: 1em; width: 1em" />    
+    </h1>
     <p>Quien sera el mayor Mandarina esta temporada?</p>
     <div class="hero-rule"></div>
   </div>

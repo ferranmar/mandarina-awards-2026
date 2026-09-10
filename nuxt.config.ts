@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   components: [{ path: "~/components/icons", pathPrefix: false }],
   app: {
     head: {
-      title: "Premios entre amigos",
+      title: "Mandarina Awards",
       link: [
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {

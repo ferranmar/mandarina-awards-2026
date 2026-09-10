@@ -10,6 +10,7 @@ const showAdminLogin = ref(false)
 const adminPassword = ref('')
 const adminError = ref('')
 
+const stage = ref("intro"); // 'intro' | 'voting'
 const view = ref('list') // 'list' | { type: 'detail', id } | 'admin'
 const voteError = ref('')
 const connected = ref(false)
@@ -175,12 +176,16 @@ async function saveSettings() {
     </div>
     <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;"> 
       <span>Mandarina Awards</span>
-      <IconMandarina style="height: 1em; width: 1em" />    
+      <IconMandarina style="height: 1em; width: 1em" class="icon-pulse" />    
     </h1>
     <p>Quien sera el mayor Mandarina esta temporada?</p>
     <div class="hero-rule"></div>
   </div>
+  <div v-if="stage === 'intro'">
+    <video src="/public/video/mandarina_awards.mp4" controls playsinline ></video>
+  </div>
 
+  <template v-else>
   <div v-if="!voterName" class="name-gate">
     <h2>¿Cómo te llamas?</h2>
     <p>Así sabremos que ya votaste en cada categoría.</p>
@@ -296,5 +301,6 @@ async function saveSettings() {
         </div>
       </div>
     </div>
+    </template>
   </template>
 </template>

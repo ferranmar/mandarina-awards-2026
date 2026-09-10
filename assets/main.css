@@ -37,6 +37,11 @@ body {
   margin: 0 auto;
   padding: 32px 20px 80px;
 }
+video, img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
 .hero {
   text-align: center;

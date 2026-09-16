@@ -274,7 +274,7 @@ async function saveSettings() {
         <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los premios.</small>
       </div>
       <div v-else class="program-list">
-      <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat).name" @click="openDetail(cat.id)" />
+      <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat)?.name" @click="openDetail(cat.id)" />
       </div>
     </div>
   </template>

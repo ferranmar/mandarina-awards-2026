@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  typescript: { typeCheck: true },
   compatibilityDate: '2024-09-01',
   devtools: { enabled: false },
   nitro: {

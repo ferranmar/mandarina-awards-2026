@@ -1,5 +1,4 @@
 <script setup>
-const settings = reactive({ title: 'Premios entre amigos', subtitle: 'Votación en vivo entre amigos' })
 const categories = ref([])
 const myVotes = ref({})
 const voterName = ref(null)
@@ -11,6 +10,7 @@ const showAdminLogin = ref(false)
 const adminPassword = ref('')
 const adminError = ref('')
 
+const stage = ref("intro"); // 'intro' | 'voting'
 const view = ref('list') // 'list' | { type: 'detail', id } | 'admin'
 const voteError = ref('')
 const connected = ref(false)
@@ -35,8 +35,6 @@ function connectSocket() {
     try {
       const msg = JSON.parse(ev.data)
       if (msg.type === 'state') {
-        settings.title = msg.payload.settings.title
-        settings.subtitle = msg.payload.settings.subtitle
         categories.value = msg.payload.categories
       }
     } catch {}
@@ -46,8 +44,6 @@ function connectSocket() {
 onMounted(async () => {
   try {
     const data = await $fetch('/api/state')
-    settings.title = data.settings.title
-    settings.subtitle = data.settings.subtitle
     categories.value = data.categories
     myVotes.value = data.myVotes || {}
     voterName.value = data.voterName
@@ -173,16 +169,10 @@ async function saveSettings() {
 </script>
 
 <template>
-  <div class="hero">
-    <div class="eyebrow">
-      <span class="dot"></span>
-      <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
-    </div>
-    <h1>{{ settings.title }}</h1>
-    <p>{{ settings.subtitle }}</p>
-    <div class="hero-rule"></div>
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
   </div>
-
   <div v-if="!voterName" class="name-gate">
     <h2>¿Cómo te llamas?</h2>
     <p>Así sabremos que ya votaste en cada categoría.</p>
@@ -216,13 +206,6 @@ async function saveSettings() {
 
     <!-- ADMIN VIEW -->
     <div v-if="view === 'admin'">
-      <div class="admin-box">
-        <h3>Datos de la ceremonia</h3>
-        <input type="text" v-model="settingsDraft.title" :placeholder="settings.title" style="margin-bottom:8px;">
-        <input type="text" v-model="settingsDraft.subtitle" :placeholder="settings.subtitle">
-        <div class="row"><button class="btn secondary" @click="saveSettings">Guardar</button></div>
-      </div>
-
       <div class="admin-box">
         <h3>Nueva categoría</h3>
         <input type="text" v-model="draftName" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
@@ -288,21 +271,10 @@ async function saveSettings() {
     <div v-else>
       <div v-if="categories.length === 0" class="empty">
         <p>Todavía no hay categorías. La persona anfitriona puede crear la primera desde el panel de anfitrión.</p>
-        <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca armar los premios.</small>
+        <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los premios.</small>
       </div>
-      <div v-else class="program-list">
-        <div class="category-card" v-for="(cat, i) in categories" :key="cat.id" @click="openDetail(cat.id)">
-          <div class="cat-num">{{ String(i + 1).padStart(2, '0') }}</div>
-          <div style="flex:1;">
-            <div class="cat-name">{{ cat.name }}</div>
-            <div class="cat-meta">
-              {{ cat.nominees.length }} nominados · {{ cat.total }} voto{{ cat.total === 1 ? '' : 's' }}
-              &nbsp;
-              <span v-if="cat.status === 'open'" class="pill open"><span class="dot" style="width:5px;height:5px;"></span> Votación abierta</span>
-              <span v-else class="pill closed">🏆 {{ winnerFor(cat) ? winnerFor(cat).name : 'Sin votos' }}</span>
-            </div>
-          </div>
-        </div>
+      <div v-else>
+      <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat)?.name" @click="openDetail(cat.id)" />
       </div>
     </div>
   </template>

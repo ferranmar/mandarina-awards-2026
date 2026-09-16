@@ -20,13 +20,10 @@ const props = defineProps<Props>();
           votes === 1 ? "" : "s"
         }}
         &nbsp;
-        <span v-if="status === 'open'" class="pill open"
-          ><span class="dot" style="width: 5px; height: 5px"></span> Votación
-          abierta</span
-        >
-        <span v-else class="pill closed"
-          >🏆 {{ winner ? winner : "Sin votos" }}</span
-        >
+        <span v-if="status === 'open'" class="pill open"><span class="dot" style="width: 5px; height: 5px"></span>
+          Votación abierta
+        </span>
+        <span v-else class="pill closed">🏆 {{ winner ? winner : "Sin votos" }}</span>
       </div>
     </div>
   </div>

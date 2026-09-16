@@ -2,10 +2,7 @@
   <div class="hero">
     <h1>
       <span>Mandarina Awards</span>
-      <IconMandarina
-        style="height: 1em; width: 1em"
-        class="icon-pulse"
-      />
+      <IconMandarina style="height: 1em; width: 1em" class="icon-pulse" />
     </h1>
     <p>Quien sera el mayor Mandarina esta temporada?</p>
     <div class="hero-rule" />
@@ -45,5 +42,23 @@ h1 {
   color: var(--muted);
   font-size: 15px;
   margin: 0;
+}
+
+@keyframes icon-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.05);
+  }
+}
+
+.icon-pulse {
+  display: inline-block;
+  transform-origin: 50% 50%;
+  animation: icon-pulse 2s infinite;
 }
 </style>

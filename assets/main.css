@@ -71,20 +71,7 @@ img {
   }
 }
 
-.icon-pulse {
-  display: inline-block;
-  transform-origin: 50% 50%;
-  animation: icon-pulse 2s infinite;
-}
-@keyframes icon-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  30% {
-    transform: scale(1.05);
-  }
-}
+
 
 .name-gate {
   background: var(--card);

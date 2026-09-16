@@ -91,9 +91,11 @@ const props = defineProps<Props>();
   gap: 16px;
   align-items: flex-start;
 }
+
 .category-card:last-child {
   border-bottom: 1px solid var(--card-border);
 }
+
 .category-card:hover .cat-name {
   color: var(--gold);
 }

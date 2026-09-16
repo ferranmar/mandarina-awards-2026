@@ -195,55 +195,6 @@ input:focus {
   color: var(--gold);
 }
 
-.category-card {
-  border-top: 1px solid var(--card-border);
-  padding: 20px 4px;
-  cursor: pointer;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-.category-card:last-child {
-  border-bottom: 1px solid var(--card-border);
-}
-.category-card:hover .cat-name {
-  color: var(--gold);
-}
-.cat-num {
-  font-family: "Fraunces", serif;
-  font-size: 15px;
-  color: var(--muted);
-  padding-top: 3px;
-  min-width: 24px;
-}
-.cat-name {
-  font-family: "Fraunces", serif;
-  font-size: 20px;
-  font-weight: 500;
-  margin: 0 0 6px;
-  transition: color 0.15s ease;
-}
-.cat-meta {
-  font-size: 13px;
-  color: var(--muted);
-}
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  border: 1px solid var(--card-border);
-}
-.pill.open {
-  color: var(--gold);
-  border-color: var(--gold-soft);
-}
-.pill.closed {
-  color: var(--muted);
-}
-
 .empty {
   text-align: center;
   padding: 50px 20px;

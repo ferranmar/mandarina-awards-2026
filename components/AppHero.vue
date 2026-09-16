@@ -40,6 +40,7 @@ h1 {
   margin: 0 0 8px;
   line-height: 1.08;
 }
+
 .hero p {
   color: var(--muted);
   font-size: 15px;

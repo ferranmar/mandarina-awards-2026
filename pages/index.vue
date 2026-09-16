@@ -169,23 +169,10 @@ async function saveSettings() {
 </script>
 
 <template>
-  <div class="hero">
-    <div class="eyebrow">
-      <span class="dot"></span>
-      <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
-    </div>
-    <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;"> 
-      <span>Mandarina Awards</span>
-      <IconMandarina style="height: 1em; width: 1em" class="icon-pulse" />    
-    </h1>
-    <p>Quien sera el mayor Mandarina esta temporada?</p>
-    <div class="hero-rule"></div>
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
   </div>
-  <div v-if="stage === 'intro'">
-    <video src="/public/video/mandarina_awards.mp4" controls playsinline ></video>
-  </div>
-
-  <template v-else>
   <div v-if="!voterName" class="name-gate">
     <h2>¿Cómo te llamas?</h2>
     <p>Así sabremos que ya votaste en cada categoría.</p>
@@ -301,6 +288,5 @@ async function saveSettings() {
         </div>
       </div>
     </div>
-    </template>
   </template>
 </template>

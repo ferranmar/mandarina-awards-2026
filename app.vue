@@ -3,6 +3,7 @@
 <template>
   <div class="page-wrap">
     <AppHeader />
+    <AppHero />
     <NuxtPage />
   </div>
 </template>

@@ -274,18 +274,7 @@ async function saveSettings() {
         <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca armar los premios.</small>
       </div>
       <div v-else class="program-list">
-        <div class="category-card" v-for="(cat, i) in categories" :key="cat.id" @click="openDetail(cat.id)">
-          <div class="cat-num">{{ String(i + 1).padStart(2, '0') }}</div>
-          <div style="flex:1;">
-            <div class="cat-name">{{ cat.name }}</div>
-            <div class="cat-meta">
-              {{ cat.nominees.length }} nominados · {{ cat.total }} voto{{ cat.total === 1 ? '' : 's' }}
-              &nbsp;
-              <span v-if="cat.status === 'open'" class="pill open"><span class="dot" style="width:5px;height:5px;"></span> Votación abierta</span>
-              <span v-else class="pill closed">🏆 {{ winnerFor(cat) ? winnerFor(cat).name : 'Sin votos' }}</span>
-            </div>
-          </div>
-        </div>
+      <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat).name" @click="openDetail(cat.id)" />
       </div>
     </div>
   </template>

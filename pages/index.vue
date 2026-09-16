@@ -171,13 +171,13 @@ async function saveSettings() {
 <template>
   <section>
     <div class="eyebrow">
-      <span class="dot"></span>
+      <span class="dot"/>
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
     <div v-if="!voterName" class="name-gate">
       <h2>¿Cómo te llamas?</h2>
       <p>Así sabremos que ya votaste en cada categoría.</p>
-      <input type="text" v-model="nameInput" placeholder="Tu nombre" @keydown.enter="submitName">
+      <input v-model="nameInput" type="text" placeholder="Tu nombre" @keydown.enter="submitName">
       <p v-if="nameError" class="error-msg">{{ nameError }}</p>
       <div class="row">
         <button class="btn" @click="submitName">Entrar a la ceremonia</button>
@@ -198,7 +198,7 @@ async function saveSettings() {
 
       <div v-if="showAdminLogin && !isAdmin" class="admin-box">
         <h3>Acceso de anfitrión</h3>
-        <input type="password" v-model="adminPassword" placeholder="Contraseña de anfitrión" @keydown.enter="loginAdmin">
+        <input v-model="adminPassword" type="password" placeholder="Contraseña de anfitrión" @keydown.enter="loginAdmin">
         <p v-if="adminError" class="error-msg">{{ adminError }}</p>
         <div class="row">
           <button class="btn" @click="loginAdmin">Entrar</button>
@@ -209,10 +209,10 @@ async function saveSettings() {
       <div v-if="view === 'admin'">
         <div class="admin-box">
           <h3>Nueva categoría</h3>
-          <input type="text" v-model="draftName" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
+          <input v-model="draftName" type="text" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
           <div style="margin-top:10px;">
-            <div class="nominee-input-row" v-for="(n, i) in draftNominees" :key="i">
-              <input type="text" v-model="draftNominees[i]" placeholder="Nombre del nominado">
+            <div v-for="(n, i) in draftNominees" :key="i" class="nominee-input-row">
+              <input v-model="draftNominees[i]" type="text" placeholder="Nombre del nominado">
             </div>
           </div>
           <p v-if="draftError" class="error-msg">{{ draftError }}</p>
@@ -225,7 +225,7 @@ async function saveSettings() {
         <div class="admin-box">
           <h3>Categorías ({{ categories.length }})</h3>
           <p v-if="categories.length === 0" style="color:var(--muted);font-size:14px;">Aún no hay categorías.</p>
-          <div class="admin-cat-item" v-for="cat in categories" :key="cat.id">
+          <div v-for="cat in categories" :key="cat.id" class="admin-cat-item">
             <div class="title">{{ cat.name }} <span style="color:var(--muted);font-weight:400;">({{ cat.nominees.length }} nominados, {{ cat.total }} votos)</span></div>
             <div class="row" style="margin-top:8px;">
               <button class="btn secondary" @click="toggleStatus(cat)">{{ cat.status === 'open' ? 'Cerrar votación' : 'Reabrir votación' }}</button>
@@ -254,12 +254,12 @@ async function saveSettings() {
               :disabled="cat.status !== 'open'"
               @click="castVote(cat.id, n.id)"
             >
-              <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"></div>
+              <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"/>
               <div class="nominee-content">
                 <span class="nominee-name">
-                  <span class="crown" v-if="cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id">🏆</span>
+                  <span v-if="cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id" class="crown">🏆</span>
                   {{ n.name }}
-                  <span class="check" v-if="myVotes[cat.id] === n.id">✓ tu voto</span>
+                  <span v-if="myVotes[cat.id] === n.id" class="check">✓ tu voto</span>
                 </span>
                 <span class="nominee-stats">{{ cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0 }}% · {{ cat.counts[n.id] || 0 }}</span>
               </div>

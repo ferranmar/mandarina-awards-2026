@@ -169,113 +169,115 @@ async function saveSettings() {
 </script>
 
 <template>
-  <div class="eyebrow">
-    <span class="dot"></span>
-    <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
-  </div>
-  <div v-if="!voterName" class="name-gate">
-    <h2>¿Cómo te llamas?</h2>
-    <p>Así sabremos que ya votaste en cada categoría.</p>
-    <input type="text" v-model="nameInput" placeholder="Tu nombre" @keydown.enter="submitName">
-    <p v-if="nameError" class="error-msg">{{ nameError }}</p>
-    <div class="row">
-      <button class="btn" @click="submitName">Entrar a la ceremonia</button>
+  <section>
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-  </div>
-
-  <template v-else>
-    <div class="topbar">
-      <span>Votando como <b>{{ voterName }}</b></span>
-      <span>
-        <button v-if="isAdmin" class="link-btn" @click="view = view === 'admin' ? 'list' : 'admin'">
-          {{ view === 'admin' ? 'Ver programa' : 'Panel de anfitrión' }}
-        </button>
-        <button v-if="isAdmin" class="link-btn" @click="logoutAdmin">Cerrar sesión de anfitrión</button>
-        <button v-else class="link-btn" @click="showAdminLogin = !showAdminLogin">Soy la persona anfitriona</button>
-      </span>
-    </div>
-
-    <div v-if="showAdminLogin && !isAdmin" class="admin-box">
-      <h3>Acceso de anfitrión</h3>
-      <input type="password" v-model="adminPassword" placeholder="Contraseña de anfitrión" @keydown.enter="loginAdmin">
-      <p v-if="adminError" class="error-msg">{{ adminError }}</p>
+    <div v-if="!voterName" class="name-gate">
+      <h2>¿Cómo te llamas?</h2>
+      <p>Así sabremos que ya votaste en cada categoría.</p>
+      <input type="text" v-model="nameInput" placeholder="Tu nombre" @keydown.enter="submitName">
+      <p v-if="nameError" class="error-msg">{{ nameError }}</p>
       <div class="row">
-        <button class="btn" @click="loginAdmin">Entrar</button>
+        <button class="btn" @click="submitName">Entrar a la ceremonia</button>
       </div>
     </div>
 
-    <!-- ADMIN VIEW -->
-    <div v-if="view === 'admin'">
-      <div class="admin-box">
-        <h3>Nueva categoría</h3>
-        <input type="text" v-model="draftName" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
-        <div style="margin-top:10px;">
-          <div class="nominee-input-row" v-for="(n, i) in draftNominees" :key="i">
-            <input type="text" v-model="draftNominees[i]" placeholder="Nombre del nominado">
-          </div>
-        </div>
-        <p v-if="draftError" class="error-msg">{{ draftError }}</p>
-        <div class="row">
-          <button class="btn secondary" @click="addNomineeField">+ Nominado</button>
-          <button class="btn" @click="submitCategory">Agregar categoría</button>
-        </div>
-      </div>
-
-      <div class="admin-box">
-        <h3>Categorías ({{ categories.length }})</h3>
-        <p v-if="categories.length === 0" style="color:var(--muted);font-size:14px;">Aún no hay categorías.</p>
-        <div class="admin-cat-item" v-for="cat in categories" :key="cat.id">
-          <div class="title">{{ cat.name }} <span style="color:var(--muted);font-weight:400;">({{ cat.nominees.length }} nominados, {{ cat.total }} votos)</span></div>
-          <div class="row" style="margin-top:8px;">
-            <button class="btn secondary" @click="toggleStatus(cat)">{{ cat.status === 'open' ? 'Cerrar votación' : 'Reabrir votación' }}</button>
-            <button class="btn secondary" @click="resetVotes(cat)">Reiniciar votos</button>
-            <button class="btn danger" @click="deleteCategory(cat)">Eliminar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DETAIL VIEW -->
-    <div v-else-if="view.type === 'detail'">
-      <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
-      <template v-for="cat in categories.filter(c => c.id === view.id)" :key="cat.id">
-        <div class="detail-header">
-          <span :class="['pill', cat.status === 'open' ? 'open' : 'closed']">{{ cat.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
-          <h2>{{ cat.name }}</h2>
-          <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ cat.total }} voto{{ cat.total === 1 ? '' : 's' }} en total</p>
-        </div>
-        <p v-if="voteError" class="error-msg">{{ voteError }}</p>
-        <div>
-          <button
-            v-for="n in cat.nominees" :key="n.id"
-            class="nominee"
-            :class="{ voted: myVotes[cat.id] === n.id, winner: cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id }"
-            :disabled="cat.status !== 'open'"
-            @click="castVote(cat.id, n.id)"
-          >
-            <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"></div>
-            <div class="nominee-content">
-              <span class="nominee-name">
-                <span class="crown" v-if="cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id">🏆</span>
-                {{ n.name }}
-                <span class="check" v-if="myVotes[cat.id] === n.id">✓ tu voto</span>
-              </span>
-              <span class="nominee-stats">{{ cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0 }}% · {{ cat.counts[n.id] || 0 }}</span>
-            </div>
+    <template v-else>
+      <div class="topbar">
+        <span>Votando como <b>{{ voterName }}</b></span>
+        <span>
+          <button v-if="isAdmin" class="link-btn" @click="view = view === 'admin' ? 'list' : 'admin'">
+            {{ view === 'admin' ? 'Ver programa' : 'Panel de anfitrión' }}
           </button>
-        </div>
-      </template>
-    </div>
+          <button v-if="isAdmin" class="link-btn" @click="logoutAdmin">Cerrar sesión de anfitrión</button>
+          <button v-else class="link-btn" @click="showAdminLogin = !showAdminLogin">Soy la persona anfitriona</button>
+        </span>
+      </div>
 
-    <!-- LIST VIEW -->
-    <div v-else>
-      <div v-if="categories.length === 0" class="empty">
-        <p>Todavía no hay categorías. La persona anfitriona puede crear la primera desde el panel de anfitrión.</p>
-        <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los premios.</small>
+      <div v-if="showAdminLogin && !isAdmin" class="admin-box">
+        <h3>Acceso de anfitrión</h3>
+        <input type="password" v-model="adminPassword" placeholder="Contraseña de anfitrión" @keydown.enter="loginAdmin">
+        <p v-if="adminError" class="error-msg">{{ adminError }}</p>
+        <div class="row">
+          <button class="btn" @click="loginAdmin">Entrar</button>
+        </div>
       </div>
+
+      <!-- ADMIN VIEW -->
+      <div v-if="view === 'admin'">
+        <div class="admin-box">
+          <h3>Nueva categoría</h3>
+          <input type="text" v-model="draftName" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
+          <div style="margin-top:10px;">
+            <div class="nominee-input-row" v-for="(n, i) in draftNominees" :key="i">
+              <input type="text" v-model="draftNominees[i]" placeholder="Nombre del nominado">
+            </div>
+          </div>
+          <p v-if="draftError" class="error-msg">{{ draftError }}</p>
+          <div class="row">
+            <button class="btn secondary" @click="addNomineeField">+ Nominado</button>
+            <button class="btn" @click="submitCategory">Agregar categoría</button>
+          </div>
+        </div>
+
+        <div class="admin-box">
+          <h3>Categorías ({{ categories.length }})</h3>
+          <p v-if="categories.length === 0" style="color:var(--muted);font-size:14px;">Aún no hay categorías.</p>
+          <div class="admin-cat-item" v-for="cat in categories" :key="cat.id">
+            <div class="title">{{ cat.name }} <span style="color:var(--muted);font-weight:400;">({{ cat.nominees.length }} nominados, {{ cat.total }} votos)</span></div>
+            <div class="row" style="margin-top:8px;">
+              <button class="btn secondary" @click="toggleStatus(cat)">{{ cat.status === 'open' ? 'Cerrar votación' : 'Reabrir votación' }}</button>
+              <button class="btn secondary" @click="resetVotes(cat)">Reiniciar votos</button>
+              <button class="btn danger" @click="deleteCategory(cat)">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL VIEW -->
+      <div v-else-if="view.type === 'detail'">
+        <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
+        <template v-for="cat in categories.filter(c => c.id === view.id)" :key="cat.id">
+          <div class="detail-header">
+            <span :class="['pill', cat.status === 'open' ? 'open' : 'closed']">{{ cat.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
+            <h2>{{ cat.name }}</h2>
+            <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ cat.total }} voto{{ cat.total === 1 ? '' : 's' }} en total</p>
+          </div>
+          <p v-if="voteError" class="error-msg">{{ voteError }}</p>
+          <div>
+            <button
+              v-for="n in cat.nominees" :key="n.id"
+              class="nominee"
+              :class="{ voted: myVotes[cat.id] === n.id, winner: cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id }"
+              :disabled="cat.status !== 'open'"
+              @click="castVote(cat.id, n.id)"
+            >
+              <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"></div>
+              <div class="nominee-content">
+                <span class="nominee-name">
+                  <span class="crown" v-if="cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id">🏆</span>
+                  {{ n.name }}
+                  <span class="check" v-if="myVotes[cat.id] === n.id">✓ tu voto</span>
+                </span>
+                <span class="nominee-stats">{{ cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0 }}% · {{ cat.counts[n.id] || 0 }}</span>
+              </div>
+            </button>
+          </div>
+        </template>
+      </div>
+
+      <!-- LIST VIEW -->
       <div v-else>
-      <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat)?.name" @click="openDetail(cat.id)" />
+        <div v-if="categories.length === 0" class="empty">
+          <p>Todavía no hay categorías. La persona anfitriona puede crear la primera desde el panel de anfitrión.</p>
+          <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los premios.</small>
+        </div>
+        <div v-else>
+        <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat)?.name" @click="openDetail(cat.id)" />
+        </div>
       </div>
-    </div>
-  </template>
+    </template>
+  </section>
 </template>

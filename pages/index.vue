@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const categories = ref([])
 const myVotes = ref({})
 const voterName = ref(null)
@@ -236,13 +236,7 @@ async function deleteCategory(cat) {
 
       <!-- LIST VIEW -->
       <div v-else>
-        <div v-if="categories.length === 0" class="empty">
-          <p>Todavía no hay categorías. La persona anfitriona puede crear la primera desde el panel de anfitrión.</p>
-          <small v-if="!isAdmin" class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los premios.</small>
-        </div>
-        <div v-else>
-        <AppCategoryCard v-for="(cat, i) in categories" :key="cat.id"  :name="cat.name" :cat-num="i + 1" :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner="winnerFor(cat)?.name" @click="openDetail(cat.id)" />
-        </div>
+        <AppCategoryList :categories="categories" @open-detail="openDetail" />
       </div>
     </template>
   </section>

@@ -15,9 +15,11 @@ const view = ref('list') // 'list' | { type: 'detail', id } | 'admin'
 const voteError = ref('')
 const connected = ref(false)
 
-const draftName = ref('')
-const draftNominees = ref(['', ''])
-const draftError = ref('')
+const categoryForm = ref({
+  catName: '',
+  catNominees: ['', '']
+})
+const categoryFormError = ref('')
 
 let socket = null
 let reconnectTimer = null
@@ -122,22 +124,22 @@ async function logoutAdmin() {
   if (view.value === 'admin') view.value = 'list'
 }
 
-function addNomineeField() { draftNominees.value.push('') }
+function addNomineeField() { categoryForm.value.catNominees.push('') }
 
 async function submitCategory() {
-  draftError.value = ''
-  const name = draftName.value.trim()
-  const nominees = draftNominees.value.map(n => n.trim()).filter(Boolean)
+  categoryFormError.value = ''
+  const name = categoryForm.value.catName.trim()
+  const nominees = categoryForm.value.catNominees.map(n => n.trim()).filter(Boolean)
   if (!name || nominees.length < 2) {
-    draftError.value = 'Ponle un nombre a la categoría y al menos 2 nominados.'
+    categoryFormError.value = 'Ponle un nombre a la categoría y al menos 2 nominados.'
     return
   }
   try {
     await $fetch('/api/admin/category', { method: 'POST', body: { name, nominees } })
-    draftName.value = ''
-    draftNominees.value = ['', '']
+    categoryForm.value.catName = ''
+    categoryForm.value.catNominees = ['', '']
   } catch (e) {
-    draftError.value = e?.data?.statusMessage || 'No se pudo crear la categoría'
+    categoryFormError.value = e?.data?.statusMessage || 'No se pudo crear la categoría'
   }
 }
 
@@ -175,13 +177,13 @@ async function deleteCategory(cat) {
       <div v-if="view === 'admin'">
         <div class="admin-box">
           <h3>Nueva categoría</h3>
-          <input v-model="draftName" type="text" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
+          <input v-model="categoryForm.catName" type="text" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
           <div style="margin-top:10px;">
-            <div v-for="(n, i) in draftNominees" :key="i" class="nominee-input-row">
-              <input v-model="draftNominees[i]" type="text" placeholder="Nombre del nominado">
+            <div v-for="(n, i) in categoryForm.catNominees" :key="i" class="nominee-input-row">
+              <input v-model="categoryForm.catNominees[i]" type="text" placeholder="Nombre del nominado">
             </div>
           </div>
-          <p v-if="draftError" class="error-msg">{{ draftError }}</p>
+          <p v-if="categoryFormError" class="error-msg">{{ categoryFormError }}</p>
           <div class="row">
             <button class="btn secondary" @click="addNomineeField">+ Nominado</button>
             <button class="btn" @click="submitCategory">Agregar categoría</button>

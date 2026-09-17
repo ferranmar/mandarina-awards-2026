@@ -174,16 +174,7 @@ async function saveSettings() {
       <span class="dot"/>
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <div v-if="!voterName" class="name-gate">
-      <h2>¿Cómo te llamas?</h2>
-      <p>Así sabremos que ya votaste en cada categoría.</p>
-      <input v-model="nameInput" type="text" placeholder="Tu nombre" @keydown.enter="submitName">
-      <p v-if="nameError" class="error-msg">{{ nameError }}</p>
-      <div class="row">
-        <button class="btn" @click="submitName">Entrar a la ceremonia</button>
-      </div>
-    </div>
-
+    <AppNameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
     <template v-else>
       <div class="topbar">
         <span>Votando como <b>{{ voterName }}</b></span>

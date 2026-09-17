@@ -176,16 +176,7 @@ async function saveSettings() {
     </div>
     <AppNameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
     <template v-else>
-      <div class="topbar">
-        <span>Votando como <b>{{ voterName }}</b></span>
-        <span>
-          <button v-if="isAdmin" class="link-btn" @click="view = view === 'admin' ? 'list' : 'admin'">
-            {{ view === 'admin' ? 'Ver programa' : 'Panel de anfitrión' }}
-          </button>
-          <button v-if="isAdmin" class="link-btn" @click="logoutAdmin">Cerrar sesión de anfitrión</button>
-          <button v-else class="link-btn" @click="showAdminLogin = !showAdminLogin">Soy la persona anfitriona</button>
-        </span>
-      </div>
+      <AppTopBar v-model="view" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
 
       <div v-if="showAdminLogin && !isAdmin" class="admin-box">
         <h3>Acceso de anfitrión</h3>

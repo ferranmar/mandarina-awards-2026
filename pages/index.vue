@@ -177,15 +177,8 @@ async function saveSettings() {
     <AppNameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
     <template v-else>
       <AppTopBar v-model="view" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
-
-      <div v-if="showAdminLogin && !isAdmin" class="admin-box">
-        <h3>Acceso de anfitrión</h3>
-        <input v-model="adminPassword" type="password" placeholder="Contraseña de anfitrión" @keydown.enter="loginAdmin">
-        <p v-if="adminError" class="error-msg">{{ adminError }}</p>
-        <div class="row">
-          <button class="btn" @click="loginAdmin">Entrar</button>
-        </div>
-      </div>
+      <AppAdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="loginAdmin"/>
+      
 
       <!-- ADMIN VIEW -->
       <div v-if="view === 'admin'">

@@ -1,4 +1,10 @@
 export default defineNuxtConfig({
+  components: [
+    {
+      path: "~/components",
+      pathPrefix: false,
+    },
+  ],
   modules: ["@nuxt/eslint"],
   typescript: { typeCheck: true },
   compatibilityDate: "2024-09-01",

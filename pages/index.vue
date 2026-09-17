@@ -175,21 +175,7 @@ async function deleteCategory(cat) {
 
       <!-- ADMIN VIEW -->
       <div v-if="view === 'admin'">
-        <div class="admin-box">
-          <h3>Nueva categoría</h3>
-          <input v-model="categoryForm.catName" type="text" placeholder="Nombre de la categoría, ej. Mejor anfitrión de fiestas">
-          <div style="margin-top:10px;">
-            <div v-for="(n, i) in categoryForm.catNominees" :key="i" class="nominee-input-row">
-              <input v-model="categoryForm.catNominees[i]" type="text" placeholder="Nombre del nominado">
-            </div>
-          </div>
-          <p v-if="categoryFormError" class="error-msg">{{ categoryFormError }}</p>
-          <div class="row">
-            <button class="btn secondary" @click="addNomineeField">+ Nominado</button>
-            <button class="btn" @click="submitCategory">Agregar categoría</button>
-          </div>
-        </div>
-
+        <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError" @add-nominee-field="addNomineeField" @submit-category="submitCategory"/>
         <div class="admin-box">
           <h3>Categorías ({{ categories.length }})</h3>
           <p v-if="categories.length === 0" style="color:var(--muted);font-size:14px;">Aún no hay categorías.</p>

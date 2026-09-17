@@ -5,7 +5,7 @@ interface Props {
   catNomineesLength: number;
   votes: number;
   status: string;
-  winner?: string;
+  winnerName?: string;
 }
 const props = defineProps<Props>();
 </script>
@@ -27,7 +27,7 @@ const props = defineProps<Props>();
         <span v-if="status === 'open'" class="pill open"><span class="dot" />
           Votación abierta
         </span>
-        <span v-else class="pill closed">🏆 {{ winner ? winner : "Sin votos" }}</span>
+        <span v-else class="pill closed">🏆 {{ winnerName ? winnerName : "Sin votos" }}</span>
       </div>
     </div>
   </div>

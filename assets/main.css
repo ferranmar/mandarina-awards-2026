@@ -71,8 +71,6 @@ img {
   }
 }
 
-
-
 .name-gate {
   background: var(--card);
   border: 1px solid var(--card-border);
@@ -90,6 +88,12 @@ img {
   color: var(--muted);
   font-size: 14px;
   margin: 0 0 16px;
+}
+
+p.error-msg {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 8px;
 }
 
 input[type="text"],
@@ -313,11 +317,6 @@ small.hint {
   color: var(--muted);
   font-size: 12px;
   margin-top: 6px;
-}
-.error-msg {
-  color: var(--danger);
-  font-size: 13px;
-  margin-top: 8px;
 }
 .conn-status {
   font-size: 11px;

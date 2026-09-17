@@ -157,15 +157,6 @@ async function deleteCategory(cat) {
   if (!confirm('¿Eliminar esta categoría por completo?')) return
   try { await $fetch(`/api/admin/category/${cat.id}`, { method: 'DELETE' }) } catch {}
 }
-
-const settingsDraft = reactive({ title: '', subtitle: '' })
-async function saveSettings() {
-  try {
-    await $fetch('/api/admin/settings', { method: 'POST', body: { title: settingsDraft.title, subtitle: settingsDraft.subtitle } })
-    settingsDraft.title = ''
-    settingsDraft.subtitle = ''
-  } catch {}
-}
 </script>
 
 <template>

@@ -165,10 +165,10 @@ async function deleteCategory(cat) {
       <span class="dot"/>
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <AppNameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
+    <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
     <template v-else>
-      <AppTopBar v-model="view" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
-      <AppAdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="loginAdmin"/>
+      <TopBar v-model="view" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
+      <AdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="loginAdmin"/>
       
 
       <!-- ADMIN VIEW -->
@@ -236,7 +236,7 @@ async function deleteCategory(cat) {
 
       <!-- LIST VIEW -->
       <div v-else>
-        <AppCategoryList :categories="categories" @open-detail="openDetail" />
+        <CategoryList :categories="categories" @open-detail="openDetail" />
       </div>
     </template>
   </section>

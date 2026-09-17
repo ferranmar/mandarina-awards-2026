@@ -35,7 +35,7 @@ function winnerFor(cat: Category): Category["nominees"][number] | null {
       premios.</small>
   </div>
   <div v-else>
-    <AppCategoryCard
+    <CategoryCard
       v-for="(cat, i) in categories" :key="cat.id" :name="cat.name" :cat-num="i + 1"
       :cat-nominees-length="cat.nominees.length" :votes="cat.total" :status="cat.status" :winner-name="winnerFor(cat)?.name"
       @click="emit('openDetail', cat.id)" />

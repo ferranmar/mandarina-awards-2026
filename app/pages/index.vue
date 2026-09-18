@@ -190,14 +190,14 @@ async function deleteCategory(cat: Category) {
             <button
               v-for="n in cat.nominees" :key="n.id"
               class="nominee"
-              :class="{ voted: myVotes[cat.id] === n.id, winner: cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id }"
+              :class="{ voted: myVotes[cat.id] === n.id, winner: cat.status === 'closed' && winnerFor(cat)?.id === n.id }"
               :disabled="cat.status !== 'open'"
               @click="castVote(cat.id, n.id)"
             >
               <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"/>
               <div class="nominee-content">
                 <span class="nominee-name">
-                  <span v-if="cat.status === 'closed' && winnerFor(cat) && winnerFor(cat).id === n.id" class="crown">🏆</span>
+                  <span v-if="cat.status === 'closed' && winnerFor(cat)?.id === n.id" class="crown">🏆</span>
                   {{ n.name }}
                   <span v-if="myVotes[cat.id] === n.id" class="check">✓ tu voto</span>
                 </span>

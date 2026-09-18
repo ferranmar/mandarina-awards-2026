@@ -10,7 +10,13 @@ const showAdminLogin = ref(false)
 const adminPassword = ref('')
 const adminError = ref('')
 
-const view = ref('list') // 'list' | { type: 'detail', id } | 'admin'
+
+const viewMode = ref<'list' | 'admin' | 'detail'>('list')
+const selectedCategoryId = ref<string | null>(null)
+const selectedCategory = computed(() =>
+  categories.value.find(c => c.id === selectedCategoryId.value) ?? null
+)
+
 const voteError = ref('')
 const connected = ref(false)
 
@@ -71,7 +77,7 @@ async function submitName() {
     const res = await $fetch('/api/register', { method: 'POST', body: { name } })
     voterName.value = res.name
     nameError.value = ''
-  } catch (e) {
+  } catch (e: any) {
     nameError.value = e?.data?.statusMessage || 'No se pudo registrar'
   }
 }
@@ -94,13 +100,19 @@ async function castVote(categoryId: string, nomineeId: string) {
   try {
     await $fetch('/api/vote', { method: 'POST', body: { categoryId, nomineeId } })
     myVotes.value = { ...myVotes.value, [categoryId]: nomineeId }
-  } catch (e) {
+  } catch (e: any) {
     voteError.value = e?.data?.statusMessage || 'No se pudo registrar el voto'
   }
 }
 
-function openDetail(id: string) { view.value = { type: 'detail', id } }
-function backToList() { view.value = 'list' }
+function openDetail(id: string) { 
+  selectedCategoryId.value = id
+  viewMode.value = 'detail'
+}
+function backToList() { 
+  viewMode.value = 'list'
+  selectedCategoryId.value = null
+}
 
 async function loginAdmin() {
   adminError.value = ''
@@ -109,8 +121,8 @@ async function loginAdmin() {
     isAdmin.value = true
     showAdminLogin.value = false
     adminPassword.value = ''
-    view.value = 'admin'
-  } catch (e) {
+    viewMode.value = 'admin'
+  } catch (e: any) {
     adminError.value = e?.data?.statusMessage || 'Contraseña incorrecta'
   }
 }
@@ -118,7 +130,7 @@ async function loginAdmin() {
 async function logoutAdmin() {
   try { await $fetch('/api/admin/logout', { method: 'POST' }) } catch {}
   isAdmin.value = false
-  if (view.value === 'admin') view.value = 'list'
+  if (viewMode.value === 'admin') viewMode.value = 'list'
 }
 
 function addNomineeField() { categoryForm.value.catNominees.push('') }
@@ -135,7 +147,7 @@ async function submitCategory() {
     await $fetch('/api/admin/category', { method: 'POST', body: { name, nominees } })
     categoryForm.value.catName = ''
     categoryForm.value.catNominees = ['', '']
-  } catch (e) {
+  } catch (e: any) {
     categoryFormError.value = e?.data?.statusMessage || 'No se pudo crear la categoría'
   }
 }
@@ -166,46 +178,44 @@ async function deleteCategory(cat: Category) {
     </div>
     <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
     <template v-else>
-      <TopBar v-model="view" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
+      <TopBar v-model="viewMode" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
       <AdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="loginAdmin"/>
       
 
       <!-- ADMIN VIEW -->
-      <div v-if="view === 'admin'">
+      <div v-if="viewMode === 'admin'">
         <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError" @add-nominee-field="addNomineeField" @submit-category="submitCategory"/>
         <AdminCategoryList :categories="categories" @toggle-status="toggleStatus" @delete-category="deleteCategory" @reset-votes="resetVotes" />
       </div>
 
       <!-- DETAIL VIEW -->
-      <div v-else-if="view.type === 'detail'">
+      <div v-else-if="viewMode === 'detail' && selectedCategory">
         <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
-        <template v-for="cat in categories.filter(c => c.id === view.id)" :key="cat.id">
           <div class="detail-header">
-            <span :class="['pill', cat.status === 'open' ? 'open' : 'closed']">{{ cat.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
-            <h2>{{ cat.name }}</h2>
-            <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ cat.total }} voto{{ cat.total === 1 ? '' : 's' }} en total</p>
+            <span :class="['pill', selectedCategory.status === 'open' ? 'open' : 'closed']">{{ selectedCategory.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
+            <h2>{{ selectedCategory.name }}</h2>
+            <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ selectedCategory.total }} voto{{ selectedCategory.total === 1 ? '' : 's' }} en total</p>
           </div>
           <p v-if="voteError" class="error-msg">{{ voteError }}</p>
           <div>
             <button
-              v-for="n in cat.nominees" :key="n.id"
+              v-for="n in selectedCategory.nominees" :key="n.id"
               class="nominee"
-              :class="{ voted: myVotes[cat.id] === n.id, winner: cat.status === 'closed' && winnerFor(cat)?.id === n.id }"
-              :disabled="cat.status !== 'open'"
-              @click="castVote(cat.id, n.id)"
+              :class="{ voted: myVotes[selectedCategory.id] === n.id, winner: selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id }"
+              :disabled="selectedCategory.status !== 'open'"
+              @click="castVote(selectedCategory.id, n.id)"
             >
-              <div class="nominee-bar" :style="{ width: (cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0) + '%' }"/>
+              <div class="nominee-bar" :style="{ width: (selectedCategory.total > 0 ? Math.round(((selectedCategory.counts[n.id]||0)/selectedCategory.total)*100) : 0) + '%' }"/>
               <div class="nominee-content">
                 <span class="nominee-name">
-                  <span v-if="cat.status === 'closed' && winnerFor(cat)?.id === n.id" class="crown">🏆</span>
+                  <span v-if="selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id" class="crown">🏆</span>
                   {{ n.name }}
-                  <span v-if="myVotes[cat.id] === n.id" class="check">✓ tu voto</span>
+                  <span v-if="myVotes[selectedCategory.id] === n.id" class="check">✓ tu voto</span>
                 </span>
-                <span class="nominee-stats">{{ cat.total > 0 ? Math.round(((cat.counts[n.id]||0)/cat.total)*100) : 0 }}% · {{ cat.counts[n.id] || 0 }}</span>
+                <span class="nominee-stats">{{ selectedCategory.total > 0 ? Math.round(((selectedCategory.counts[n.id]||0)/selectedCategory.total)*100) : 0 }}% · {{ selectedCategory.counts[n.id] || 0 }}</span>
               </div>
             </button>
           </div>
-        </template>
       </div>
 
       <!-- LIST VIEW -->

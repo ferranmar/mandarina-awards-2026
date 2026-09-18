@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const categories = ref([])
-const myVotes = ref({})
-const voterName = ref(null)
+const categories = ref<Category[]>([])
+const myVotes = ref<Record<string, string>>({})
+const voterName = ref<string | null>(null)
 const nameInput = ref('')
 const nameError = ref('')
 
@@ -10,7 +10,6 @@ const showAdminLogin = ref(false)
 const adminPassword = ref('')
 const adminError = ref('')
 
-const stage = ref("intro"); // 'intro' | 'voting'
 const view = ref('list') // 'list' | { type: 'detail', id } | 'admin'
 const voteError = ref('')
 const connected = ref(false)
@@ -21,8 +20,9 @@ const categoryForm = ref({
 })
 const categoryFormError = ref('')
 
-let socket = null
-let reconnectTimer = null
+let socket: WebSocket | null = null
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+
 
 function connectSocket() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws'
@@ -32,7 +32,7 @@ function connectSocket() {
     connected.value = false
     reconnectTimer = setTimeout(connectSocket, 2000)
   }
-  socket.onerror = () => { socket && socket.close() }
+  socket.onerror = () => { socket?.close() }
   socket.onmessage = (ev) => {
     try {
       const msg = JSON.parse(ev.data)
@@ -76,21 +76,18 @@ async function submitName() {
   }
 }
 
-function tallyFor(cat) {
-  return { counts: cat.counts, total: cat.total }
-}
 
-function winnerFor(cat) {
+function winnerFor(cat: Category): Nominee | null {
   if (!cat.total) return null
-  let best = null, bestCount = -1
-  cat.nominees.forEach(n => {
+  let best: Nominee | null = null, bestCount = -1
+  cat.nominees.forEach((n: Nominee) => {
     const c = cat.counts[n.id] || 0
     if (c > bestCount) { best = n; bestCount = c }
   })
   return best
 }
 
-async function castVote(categoryId, nomineeId) {
+async function castVote(categoryId: string, nomineeId: string) {
   const cat = categories.value.find(c => c.id === categoryId)
   if (!cat || cat.status !== 'open') return
   voteError.value = ''
@@ -102,7 +99,7 @@ async function castVote(categoryId, nomineeId) {
   }
 }
 
-function openDetail(id) { view.value = { type: 'detail', id } }
+function openDetail(id: string) { view.value = { type: 'detail', id } }
 function backToList() { view.value = 'list' }
 
 async function loginAdmin() {
@@ -143,19 +140,19 @@ async function submitCategory() {
   }
 }
 
-async function toggleStatus(cat) {
+async function toggleStatus(cat: Category) {
   const status = cat.status === 'open' ? 'closed' : 'open'
   try {
     await $fetch(`/api/admin/category/${cat.id}`, { method: 'PATCH', body: { status } })
   } catch {}
 }
 
-async function resetVotes(cat) {
+async function resetVotes(cat: Category) {
   if (!confirm('¿Borrar todos los votos de esta categoría?')) return
   try { await $fetch(`/api/admin/category/${cat.id}/reset`, { method: 'POST' }) } catch {}
 }
 
-async function deleteCategory(cat) {
+async function deleteCategory(cat: Category) {
   if (!confirm('¿Eliminar esta categoría por completo?')) return
   try { await $fetch(`/api/admin/category/${cat.id}`, { method: 'DELETE' }) } catch {}
 }

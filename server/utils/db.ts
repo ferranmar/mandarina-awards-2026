@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS votes (
 );
 `)
 
-export function getFullState() {
+export function getFullState(): { categories: Category[] } {
   const categories = db.prepare('SELECT id, name, status FROM categories ORDER BY position ASC').all() as any[]
   const nomineesStmt = db.prepare('SELECT id, name FROM nominees WHERE category_id = ?')
   const tallyStmt = db.prepare('SELECT nominee_id, COUNT(*) as count FROM votes WHERE category_id = ? GROUP BY nominee_id')

@@ -3,12 +3,14 @@
     <nav>
       <ul>
         <li>
-          <NuxtLink to="/" exactActiveClass="is-active">Votaciones</NuxtLink>
+          <NuxtLink to="/" exact-active-class="is-active">
+            Votaciones
+          </NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/mandarinafilm" exactActiveClass="is-active"
-            >Video</NuxtLink
-          >
+          <NuxtLink to="/mandarinafilm" exact-active-class="is-active">
+            Video
+          </NuxtLink>
         </li>
       </ul>
     </nav>
@@ -34,6 +36,7 @@ ul {
   display: flex;
   text-align: center;
 }
+
 li {
   flex: 100%;
 }

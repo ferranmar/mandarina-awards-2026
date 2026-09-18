@@ -45,7 +45,7 @@ function connectSocket() {
       if (msg.type === 'state') {
         categories.value = msg.payload.categories
       }
-    } catch {}
+    } catch { }
   }
 }
 
@@ -55,12 +55,12 @@ onMounted(async () => {
     categories.value = data.categories
     myVotes.value = data.myVotes || {}
     voterName.value = data.voterName
-  } catch {}
+  } catch { }
 
   try {
     const me = await $fetch('/api/admin/me')
     isAdmin.value = !!me.isAdmin
-  } catch {}
+  } catch { }
 
   connectSocket()
 })
@@ -105,11 +105,11 @@ async function castVote(categoryId: string, nomineeId: string) {
   }
 }
 
-function openDetail(id: string) { 
+function openDetail(id: string) {
   selectedCategoryId.value = id
   viewMode.value = 'detail'
 }
-function backToList() { 
+function backToList() {
   viewMode.value = 'list'
   selectedCategoryId.value = null
 }
@@ -128,7 +128,7 @@ async function loginAdmin() {
 }
 
 async function logoutAdmin() {
-  try { await $fetch('/api/admin/logout', { method: 'POST' }) } catch {}
+  try { await $fetch('/api/admin/logout', { method: 'POST' }) } catch { }
   isAdmin.value = false
   if (viewMode.value === 'admin') viewMode.value = 'list'
 }
@@ -156,66 +156,72 @@ async function toggleStatus(cat: Category) {
   const status = cat.status === 'open' ? 'closed' : 'open'
   try {
     await $fetch(`/api/admin/category/${cat.id}`, { method: 'PATCH', body: { status } })
-  } catch {}
+  } catch { }
 }
 
 async function resetVotes(cat: Category) {
   if (!confirm('¿Borrar todos los votos de esta categoría?')) return
-  try { await $fetch(`/api/admin/category/${cat.id}/reset`, { method: 'POST' }) } catch {}
+  try { await $fetch(`/api/admin/category/${cat.id}/reset`, { method: 'POST' }) } catch { }
 }
 
 async function deleteCategory(cat: Category) {
   if (!confirm('¿Eliminar esta categoría por completo?')) return
-  try { await $fetch(`/api/admin/category/${cat.id}`, { method: 'DELETE' }) } catch {}
+  try { await $fetch(`/api/admin/category/${cat.id}`, { method: 'DELETE' }) } catch { }
 }
 </script>
 
 <template>
   <section>
     <div class="eyebrow">
-      <span class="dot"/>
+      <span class="dot" />
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName"/>
+    <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="submitName" />
     <template v-else>
-      <TopBar v-model="viewMode" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin" @toggle-admin-login="showAdminLogin= !showAdminLogin"/>
-      <AdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="loginAdmin"/>
-      
+      <TopBar v-model="viewMode" :voter-name="voterName" :is-admin="isAdmin" @logout-admin="logoutAdmin"
+        @toggle-admin-login="showAdminLogin = !showAdminLogin" />
+      <AdminBox v-if="showAdminLogin && !isAdmin" v-model="adminPassword" :admin-error="adminError"
+        @login-admin="loginAdmin" />
+
 
       <!-- ADMIN VIEW -->
       <div v-if="viewMode === 'admin'">
-        <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError" @add-nominee-field="addNomineeField" @submit-category="submitCategory"/>
-        <AdminCategoryList :categories="categories" @toggle-status="toggleStatus" @delete-category="deleteCategory" @reset-votes="resetVotes" />
+        <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError"
+          @add-nominee-field="addNomineeField" @submit-category="submitCategory" />
+        <AdminCategoryList :categories="categories" @toggle-status="toggleStatus" @delete-category="deleteCategory"
+          @reset-votes="resetVotes" />
       </div>
 
       <!-- DETAIL VIEW -->
       <div v-else-if="viewMode === 'detail' && selectedCategory">
         <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
-          <div class="detail-header">
-            <span :class="['pill', selectedCategory.status === 'open' ? 'open' : 'closed']">{{ selectedCategory.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
-            <h2>{{ selectedCategory.name }}</h2>
-            <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ selectedCategory.total }} voto{{ selectedCategory.total === 1 ? '' : 's' }} en total</p>
-          </div>
-          <p v-if="voteError" class="error-msg">{{ voteError }}</p>
-          <div>
-            <button
-              v-for="n in selectedCategory.nominees" :key="n.id"
-              class="nominee"
-              :class="{ voted: myVotes[selectedCategory.id] === n.id, winner: selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id }"
-              :disabled="selectedCategory.status !== 'open'"
-              @click="castVote(selectedCategory.id, n.id)"
-            >
-              <div class="nominee-bar" :style="{ width: (selectedCategory.total > 0 ? Math.round(((selectedCategory.counts[n.id]||0)/selectedCategory.total)*100) : 0) + '%' }"/>
-              <div class="nominee-content">
-                <span class="nominee-name">
-                  <span v-if="selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id" class="crown">🏆</span>
-                  {{ n.name }}
-                  <span v-if="myVotes[selectedCategory.id] === n.id" class="check">✓ tu voto</span>
-                </span>
-                <span class="nominee-stats">{{ selectedCategory.total > 0 ? Math.round(((selectedCategory.counts[n.id]||0)/selectedCategory.total)*100) : 0 }}% · {{ selectedCategory.counts[n.id] || 0 }}</span>
-              </div>
-            </button>
-          </div>
+        <div class="detail-header">
+          <span :class="['pill', selectedCategory.status === 'open' ? 'open' : 'closed']">{{ selectedCategory.status ===
+            'open' ? 'Votación abierta' : 'Votación cerrada' }}</span>
+          <h2>{{ selectedCategory.name }}</h2>
+          <p style="color:var(--muted);font-size:13px;margin:0 0 18px;">{{ selectedCategory.total }} voto{{
+            selectedCategory.total === 1 ? '' : 's' }} en total</p>
+        </div>
+        <p v-if="voteError" class="error-msg">{{ voteError }}</p>
+        <div>
+          <button v-for="n in selectedCategory.nominees" :key="n.id" class="nominee"
+            :class="{ voted: myVotes[selectedCategory.id] === n.id, winner: selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id }"
+            :disabled="selectedCategory.status !== 'open'" @click="castVote(selectedCategory.id, n.id)">
+            <div class="nominee-bar"
+              :style="{ width: (selectedCategory.total > 0 ? Math.round(((selectedCategory.counts[n.id] || 0) / selectedCategory.total) * 100) : 0) + '%' }" />
+            <div class="nominee-content">
+              <span class="nominee-name">
+                <span v-if="selectedCategory.status === 'closed' && winnerFor(selectedCategory)?.id === n.id"
+                  class="crown">🏆</span>
+                {{ n.name }}
+                <span v-if="myVotes[selectedCategory.id] === n.id" class="check">✓ tu voto</span>
+              </span>
+              <span class="nominee-stats">{{ selectedCategory.total > 0 ?
+                Math.round(((selectedCategory.counts[n.id] || 0) / selectedCategory.total)*100) : 0 }}% · {{
+                  selectedCategory.counts[n.id] || 0 }}</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       <!-- LIST VIEW -->

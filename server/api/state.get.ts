@@ -4,7 +4,7 @@ export default defineEventHandler((event) => {
   const voterId = getCookie(event, 'voter_id') || null
   const state = getFullState()
 
-  let myVotes: Record<string, string> = {}
+  const myVotes: Record<string, string> = {}
   let voterName: string | null = null
 
   if (voterId) {

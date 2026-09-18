@@ -1,7 +1,6 @@
 import Database from 'better-sqlite3'
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import type { Category } from '#shared/types/category'
 
 const DB_PATH = process.env.DB_PATH || './data/premios.db'
 mkdirSync(dirname(resolve(DB_PATH)), { recursive: true })

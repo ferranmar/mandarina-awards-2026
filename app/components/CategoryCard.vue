@@ -1,13 +1,5 @@
 <script setup lang="ts">
-interface Props {
-  name: string;
-  catNum: number;
-  catNomineesLength: number;
-  votes: number;
-  status: string;
-  winnerName?: string;
-}
-const props = defineProps<Props>();
+const props = defineProps<CategoryCardProps>();
 </script>
 
 <template>

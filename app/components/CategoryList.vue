@@ -1,20 +1,8 @@
 <script setup lang="ts">
 
-interface Category {
-  id: string
-  name: string
-  total: number
-  status: string
-  nominees: {
-    id: string
-    name: string
-  }[],
-  counts: Record<string, number>
-}
-interface Props {
+const props = defineProps<{
   categories: Category[]
-}
-const props = defineProps<Props>()
+}>()
 const emit = defineEmits<{ openDetail: [id: string] }>()
 
 function winnerFor(cat: Category): Category["nominees"][number] | null {

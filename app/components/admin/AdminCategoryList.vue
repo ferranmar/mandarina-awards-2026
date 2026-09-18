@@ -1,16 +1,8 @@
 <script setup lang="ts">
-interface Category {
-  id: string,
-  name: string,
-  total: number,
-  status: string,
-  nominees: string[]
-}
 
-interface Props {
+const props = defineProps<{
   categories: Category[]
-}
-const props = defineProps<Props>()
+}>()
 const emit = defineEmits<{
   toggleStatus: [cat: Category],
   resetVotes: [cat: Category],
@@ -23,8 +15,9 @@ const emit = defineEmits<{
     <h3>Categorías ({{ props.categories.length }})</h3>
     <p v-if="categories.length === 0" style="color:var(--muted);font-size:14px;">Aún no hay categorías.</p>
     <div v-for="cat in categories" :key="cat.id" class="admin-cat-item">
-      <div class="title">{{ cat.name }} <span style="color:var(--muted);font-weight:400;">({{ cat.nominees.length
-      }} nominados, {{ cat.total }} votos)</span></div>
+      <div class="title">{{ cat.name }} 
+        <span style="color:var(--muted);font-weight:400;">({{ cat.nominees.length}} nominados, {{ cat.total }} votos)</span>
+      </div>
       <div class="row" style="margin-top:8px;">
         <button class="btn secondary" @click="emit('toggleStatus', cat)">
           {{ cat.status === 'open' ? 'Cerrar votación' : 'Reabrir votación' }}

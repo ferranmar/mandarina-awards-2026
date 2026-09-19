@@ -10,6 +10,11 @@ export default function useVoting() {
   const connected = useState<boolean>("connected", () => false);
 
   function connectSocket() {
+    if (!import.meta.client) {
+      console.warn('connectSocket() called from server ')
+      return
+    }
+
     if (socket) return;
     const proto = location.protocol === "https:" ? "wss" : "ws";
     socket = new WebSocket(`${proto}://${location.host}/api/ws`);
@@ -79,7 +84,7 @@ export default function useVoting() {
     isAdmin.value = false;
   }
 
-  async function submitCategory(name: string, nominees: string[]) {
+  async function createCategory(name: string, nominees: string[]) {
     await $fetch("/api/admin/category", {
       method: "POST",
       body: { name, nominees },
@@ -116,7 +121,7 @@ export default function useVoting() {
     castVote,
     loginAdmin,
     logoutAdmin,
-    submitCategory,
+    createCategory,
     toggleCategoryStatus,
     resetCategoryVotes,
     deleteCategory,

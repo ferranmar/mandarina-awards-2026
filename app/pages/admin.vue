@@ -44,11 +44,9 @@ async function toggleStatus(cat: Category) {
   try { await toggleCategoryStatus(cat) } catch { }
 }
 async function resetVotes(cat: Category) {
-  if (!confirm('¿Borrar todos los votos de esta categoría?')) return
   try { await resetCategoryVotes(cat) } catch { }
 }
 async function removeCategory(cat: Category) {
-  if (!confirm('¿Eliminar esta categoría por completo?')) return
   try { await deleteCategory(cat) } catch { }
 }
 </script>

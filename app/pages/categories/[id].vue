@@ -50,8 +50,7 @@ function winnerFor(cat: Category): Nominee | null {
         <button v-for="n in category.nominees" :key="n.id" class="nominee"
           :class="{ voted: myVotes[category.id] === n.id, winner: category.status === 'closed' && winnerFor(category)?.id === n.id }"
           :disabled="category.status !== 'open'" @click="handleCastVote(n.id)">
-          <div class="nominee-bar"
-            :style="{ width: (category.total > 0 ? Math.round(((category.counts[n.id] || 0) / category.total) * 100) : 0) + '%' }" />
+          <div class="nominee-bar" />
           <div class="nominee-content">
             <span class="nominee-name">
               <span v-if="category.status === 'closed' && winnerFor(category)?.id === n.id" class="crown">
@@ -61,10 +60,6 @@ function winnerFor(cat: Category): Nominee | null {
               <span v-if="myVotes[category.id] === n.id" class="check">
                 ✓ tu voto
               </span>
-            </span>
-            <span class="nominee-stats">
-              {{ category.total > 0 ? Math.round(((category.counts[n.id] || 0) /
-                category.total) * 100) : 0 }}% · {{ category.counts[n.id] || 0 }}
             </span>
           </div>
         </button>

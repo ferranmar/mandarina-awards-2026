@@ -31,6 +31,15 @@ body {
   color: var(--cream);
   -webkit-font-smoothing: antialiased;
 }
+ol,
+ul,
+menu {
+  list-style: none;
+}
+a {
+  text-decoration: inherit;
+  color: inherit;
+}
 #__nuxt,
 .page-wrap {
   max-width: 640px;
@@ -65,11 +74,6 @@ video {
   background: var(--gold);
   animation: pulse 2s infinite;
 }
-
-.pill .dot {
-  width: 5px;
-  height: 5px;
-}
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(199, 154, 61, 0.55);
@@ -81,7 +85,6 @@ video {
     box-shadow: 0 0 0 0 rgba(199, 154, 61, 0);
   }
 }
-
 .name-gate {
   background: var(--card);
   border: 1px solid var(--card-border);
@@ -106,17 +109,6 @@ p.error-msg {
   font-size: 13px;
   margin-top: 8px;
 }
-ol,
-ul,
-menu {
-  list-style: none;
-}
-
-a {
-  text-decoration: inherit;
-  color: inherit;
-}
-
 nav a {
   display: block;
   width: 100%;
@@ -344,6 +336,10 @@ nav li a.is-active {
 
 .pill.closed {
   color: var(--muted);
+}
+.pill .dot {
+  width: 5px;
+  height: 5px;
 }
 
 .category-card {

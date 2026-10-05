@@ -28,7 +28,7 @@ async function handleSubmitName() {
       <span class="dot" />
       <span :class="['conn-status', { live: connected }]">{{ connected ? 'En vivo' : 'Conectando…' }}</span>
     </div>
-    <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="handleSubmitName"/>
+    <NameGate v-if="!voterName" v-model="nameInput" :name-error="nameError" @submit-name="handleSubmitName" />
     <template v-else>
       <NuxtPage />
     </template>

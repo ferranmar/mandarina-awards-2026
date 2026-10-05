@@ -9,9 +9,3 @@ const { voterName } = useVoting()
     <NuxtLink to="/admin" class="link-btn">Soy la persona anfitriona</NuxtLink>
   </div>
 </template>
-
-<style scoped>
-a {
-  text-decoration: none;
-}
-</style>

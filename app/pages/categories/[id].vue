@@ -33,7 +33,7 @@ function winnerFor(cat: Category): Nominee | null {
 </script>
 
 <template>
-  <div>
+  <div class="page">
     <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
     <div v-if="category">
       <div class="detail-header">
@@ -70,7 +70,6 @@ function winnerFor(cat: Category): Nominee | null {
         </button>
       </div>
     </div>
-
   </div>
 
 

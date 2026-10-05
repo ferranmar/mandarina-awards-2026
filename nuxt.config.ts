@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   modules: ["@nuxt/eslint"],
   typescript: { typeCheck: true },
   compatibilityDate: "2024-09-01",
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   nitro: {
     experimental: {
       websocket: true,

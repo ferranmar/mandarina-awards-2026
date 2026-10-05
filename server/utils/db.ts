@@ -1,6 +1,8 @@
 import Database from 'better-sqlite3'
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
+import { nanoid } from 'nanoid'
+
 
 const DB_PATH = process.env.DB_PATH || './data/premios.db'
 mkdirSync(dirname(resolve(DB_PATH)), { recursive: true })
@@ -35,6 +37,32 @@ CREATE TABLE IF NOT EXISTS votes (
   PRIMARY KEY (category_id, voter_id)
 );
 `)
+
+const DEFAULT_CATEGORIES = [
+  'Chófer del año',
+  'Infiel del año',
+  'Correada del año',
+  'Golden Mandarin (promesa del año)',
+  'Pana del año',
+  'Revelación del año',
+  'Mandarina de oro',
+  'Borracho del año',
+  'Guarrada del año',
+  'Gymbro del año',
+]
+
+function seedDefaultCategories() {
+  const { count } = db.prepare('SELECT COUNT(*) as count FROM categories').get() as { count: number }
+  console.log(count)
+  if (count === 0) {
+    const insert = db.prepare('INSERT INTO categories (id, name, status, position) VALUES (?, ?, ?, ?)')
+    const seed = db.transaction((names: string[]) => {
+      names.forEach((name, i) => insert.run(nanoid(), name, 'open', i))
+    })
+    seed(DEFAULT_CATEGORIES)
+  }
+}
+seedDefaultCategories()
 
 export function getFullState(): { categories: Category[] } {
   const categories = db.prepare('SELECT id, name, status FROM categories ORDER BY position ASC').all() as any[]

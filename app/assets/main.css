@@ -40,11 +40,24 @@ a {
   text-decoration: inherit;
   color: inherit;
 }
-#__nuxt,
-.page-wrap {
+
+#__nuxt {
   max-width: 640px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+}
+.page-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: 32px 20px 24px;
+  overflow: hidden;
+}
+.page,
+.list-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 video,
 img {
@@ -228,7 +241,8 @@ input:focus {
 }
 
 .category-list {
-  max-height: 60vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;

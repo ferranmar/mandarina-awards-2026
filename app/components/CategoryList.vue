@@ -21,7 +21,7 @@ function openDetail(id: string) {
 </script>
 
 <template>
-  <div>
+  <div class="list-wrap">
     <div v-if="categories.length === 0" class="empty">
       <p>Todavía no hay categorías. La persona anfitriona puede crear la primera desde el panel de anfitrión.</p>
       <small class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los

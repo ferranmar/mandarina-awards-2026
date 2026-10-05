@@ -231,6 +231,7 @@ input:focus {
   font-size: 13px;
   font-family: "Inter", sans-serif;
   padding: 4px;
+  align-self: flex-start
 }
 .link-btn:hover {
   color: var(--gold);

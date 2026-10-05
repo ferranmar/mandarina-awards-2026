@@ -27,7 +27,7 @@ function openDetail(id: string) {
       <small class="hint">Toca "Soy la persona anfitriona" arriba si te toca crear los
         premios.</small>
     </div>
-    <div v-else>
+    <div v-else class="category-list">
       <CategoryCard 
         v-for="(cat, i) in categories" 
         :key="cat.id" :name="cat.name" :cat-num="i + 1"

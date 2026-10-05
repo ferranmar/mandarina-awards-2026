@@ -39,27 +39,35 @@ CREATE TABLE IF NOT EXISTS votes (
 `)
 
 const DEFAULT_CATEGORIES = [
-  'Chófer del año',
-  'Infiel del año',
-  'Correada del año',
-  'Golden Mandarin (promesa del año)',
-  'Pana del año',
-  'Revelación del año',
-  'Mandarina de oro',
-  'Borracho del año',
-  'Guarrada del año',
-  'Gymbro del año',
-]
+  { categoria: 'Chófer del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Infiel del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Correada del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Golden Mandarin (promesa del año)', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Pana del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Revelación del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Mandarina de oro', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Borracho del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Guarrada del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Gymbro del año', candidatos: ['Emilio', 'Ferran'] },
+];
 
 function seedDefaultCategories() {
-  const { count } = db.prepare('SELECT COUNT(*) as count FROM categories').get() as { count: number }
-  console.log(count)
+  const { count } = db.prepare('SELECT COUNT(*) as count FROM categories').get() as { count: number };
+  
   if (count === 0) {
-    const insert = db.prepare('INSERT INTO categories (id, name, status, position) VALUES (?, ?, ?, ?)')
-    const seed = db.transaction((names: string[]) => {
-      names.forEach((name, i) => insert.run(nanoid(), name, 'open', i))
-    })
-    seed(DEFAULT_CATEGORIES)
+    const insertCategory = db.prepare('INSERT INTO categories (id, name, status, position) VALUES (?, ?, ?, ?)');
+    const insertNominee = db.prepare('INSERT INTO nominees (id, category_id, name) VALUES (?, ?, ?)');
+
+    const seed = db.transaction((categories: typeof DEFAULT_CATEGORIES) => {
+      categories.forEach((item, index) => {
+        const categoryId = nanoid();
+        insertCategory.run(categoryId, item.categoria, 'open', index);
+        item.candidatos.forEach((candidateName) => {
+          insertNominee.run(nanoid(), categoryId, candidateName);
+        });
+      });
+    });
+    seed(DEFAULT_CATEGORIES);
   }
 }
 seedDefaultCategories()

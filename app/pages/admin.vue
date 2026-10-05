@@ -54,7 +54,7 @@ async function removeCategory(cat: Category) {
 </script>
 
 <template>
-  <div>
+  <div class="page">
     <AdminBox v-if="!isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="handleLogin" />
 
     <template v-else>

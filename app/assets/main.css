@@ -30,7 +30,6 @@ body {
       transparent 60%
     ),
     linear-gradient(180deg, var(--bg-1), var(--bg-0) 60%);
-  min-height: 100vh;
   font-family: "Inter", sans-serif;
   color: var(--cream);
   -webkit-font-smoothing: antialiased;
@@ -53,7 +52,7 @@ a {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  padding: 32px 20px 24px;
+  padding: 32px 20px max(24px, env(safe-area-inset-bottom));
   overflow: hidden;
 }
 .page {

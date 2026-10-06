@@ -14,6 +14,7 @@ export default defineNuxtConfig({
       websocket: true,
     },
   },
+  vite: {server: {allowedHosts: ['purse-celestial-snare.ngrok-free.dev']}},
   css: ["~/assets/main.css"],
   app: {
     head: {

@@ -480,6 +480,8 @@ nav li a.is-active {
 .admin-cat-item .title {
   font-weight: 600;
   margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
 }
 .footer-toggle {
   text-align: center;

@@ -49,6 +49,7 @@ const DEFAULT_CATEGORIES = [
   { categoria: 'Borracho del año', candidatos: ['Emilio', 'Ferran'] },
   { categoria: 'Guarrada del año', candidatos: ['Emilio', 'Ferran'] },
   { categoria: 'Gymbro del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Panan\'t del año', candidatos: ['Emilio', 'Ferran'] },
 ];
 
 function seedDefaultCategories() {

@@ -52,17 +52,16 @@ async function removeCategory(cat: Category) {
 </script>
 
 <template>
-  <div class="page">
+  <div class="page-content">
     <AdminBox v-if="!isAdmin" v-model="adminPassword" :admin-error="adminError" @login-admin="handleLogin" />
-
     <template v-else>
-      <div class="admin-header">
-        <button class="link-btn" @click="handleLogout">Cerrar sesión</button>
+      <button class="link-btn" @click="handleLogout">Cerrar sesión</button>
+      <div class="list-wrap">
+        <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError"
+          @add-nominee-field="addNomineeField" @submit-category="submitCategory" />
+        <AdminCategoryList :categories="categories" @toggle-status="toggleStatus" @delete-category="removeCategory"
+          @reset-votes="resetVotes" />
       </div>
-      <AdminNewCategoryForm v-model="categoryForm" :category-form-error="categoryFormError"
-        @add-nominee-field="addNomineeField" @submit-category="submitCategory" />
-      <AdminCategoryList :categories="categories" @toggle-status="toggleStatus" @delete-category="removeCategory"
-        @reset-votes="resetVotes" />
     </template>
   </div>
 </template>

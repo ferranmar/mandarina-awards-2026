@@ -33,9 +33,9 @@ function winnerFor(cat: Category): Nominee | null {
 </script>
 
 <template>
-  <div class="page">
+  <div class="page-content">
     <button class="link-btn" @click="backToList">&larr; Volver al programa</button>
-    <div v-if="category">
+    <div v-if="category" class="page-content">
       <div class="detail-header">
         <span :class="['pill', category.status === 'open' ? 'open' : 'closed']">
           {{ category.status === 'open' ? 'Votación abierta' : 'Votación cerrada' }}
@@ -46,7 +46,7 @@ function winnerFor(cat: Category): Nominee | null {
         </p>
       </div>
       <p v-if="voteError" class="error-msg">{{ voteError }}</p>
-      <div>
+      <div class="list-wrap">
         <button v-for="n in category.nominees" :key="n.id" class="nominee"
           :class="{ voted: myVotes[category.id] === n.id, winner: category.status === 'closed' && winnerFor(category)?.id === n.id }"
           :disabled="category.status !== 'open'" @click="handleCastVote(n.id)">

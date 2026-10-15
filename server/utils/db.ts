@@ -38,18 +38,21 @@ CREATE TABLE IF NOT EXISTS votes (
 );
 `)
 
+const DEFAULT_CANDIDATES = ['Emilio', 'Ferri', 'Pere', 'Rasse', 'Biel', 'Carlos', 'Cesc', 'Dani', 'Eloy', 'Hugo', 'Ivan', 'Joel', 'Oscar']
+
 const DEFAULT_CATEGORIES = [
-  { categoria: 'Chófer del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Infiel del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Correada del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Golden Mandarin (promesa del año)', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Pana del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Revelación del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Mandarina de oro', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Borracho del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Guarrada del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Gymbro del año', candidatos: ['Emilio', 'Ferran'] },
-  { categoria: 'Panan\'t del año', candidatos: ['Emilio', 'Ferran'] },
+  { categoria: 'Chófer del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Infiel del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Correada del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Golden Mandarin', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Pana del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Revelación del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Borracho del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Guarrada del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Gymbro del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Panan\'t del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Multimedia del año', candidatos: DEFAULT_CANDIDATES },
+  { categoria: 'Mandarina de oro', candidatos: DEFAULT_CANDIDATES },
 ];
 
 function seedDefaultCategories() {

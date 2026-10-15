@@ -1,3 +1,6 @@
+<script setup lang="ts">
+const { isAdmin } = useVoting()
+</script>
 <template>
   <header>
     <nav>
@@ -7,7 +10,7 @@
             Votaciones
           </NuxtLink>
         </li>
-        <li>
+        <li v-if="isAdmin">
           <NuxtLink to="/mandarinafilm" exact-active-class="is-active">
             Video
           </NuxtLink>
